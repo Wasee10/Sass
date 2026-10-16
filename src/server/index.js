@@ -7,3 +7,4 @@ export * from './config/env';
 export * from './payment';
 export * from './db';
 export * from './services';
+export * from './keyword-research';

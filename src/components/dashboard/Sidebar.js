@@ -15,6 +15,7 @@ import {
   Shield,
   X,
   ChevronDown,
+  Search,
 } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 
@@ -23,6 +24,11 @@ const NAV_ITEMS = [
     name: 'Dashboard',
     href: '/dashboard',
     icon: Gauge,
+  },
+  {
+    name: 'Keyword Research',
+    href: '/dashboard/keyword-research',
+    icon: Search,
   },
   {
     name: 'Billing & License',
