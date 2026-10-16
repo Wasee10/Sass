@@ -31,7 +31,7 @@ const NAV_ITEMS = [
   },
   {
     name: 'Tickets & Feedback',
-    href: '/dashboard#tickets',
+    href: '/dashboard/tickets',
     icon: MessagesSquare,
   },
   {

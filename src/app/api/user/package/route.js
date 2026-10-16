@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { saveUserPackageToPostgres, getUserPackageFromPostgres } from '@/lib/postgres';
+import { saveUserPackage as saveUserPackageToPostgres, getUserPackage as getUserPackageFromPostgres } from '@/server/services/package.service';
 import { PLANS } from '@/lib/mock-data';
 
 export async function POST(request) {

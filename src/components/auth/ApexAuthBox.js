@@ -318,7 +318,11 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
             updateSubscriptionPlan(resolvedPlanId, resolvedInterval).catch(() => {});
           }
 
-          window.location.href = redirectPath;
+          const finalRedirect = (!isFree && (!redirectPath || redirectPath === '/dashboard'))
+            ? `/checkout?plan=${resolvedPlanId}&interval=${resolvedInterval}`
+            : (redirectPath || '/dashboard');
+
+          window.location.href = finalRedirect;
         }
       }
     } catch {
@@ -439,8 +443,8 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
       displayName: 'Alex Thorne',
     }).catch(() => {});
 
-    // DIRECTLY GO TO /dashboard
-    window.location.href = '/dashboard';
+    // DIRECTLY GO TO redirectPath OR /dashboard
+    window.location.href = redirectPath || '/dashboard';
   };
 
   return (
@@ -650,6 +654,30 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
               <Lock size={18} />
             </div>
           </div>
+
+          {/* Checkout Auth Requirement Notice */}
+          {redirectPath?.includes('/checkout') && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.65rem',
+                padding: '0.85rem 1.15rem',
+                borderRadius: 'var(--radius-md)',
+                background: 'rgba(225, 29, 72, 0.08)',
+                border: '1px solid rgba(225, 29, 72, 0.25)',
+                color: '#e11d48',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                marginBottom: '1.25rem',
+              }}
+            >
+              <Lock size={16} />
+              <span>
+                Please {mode === 'signin' ? 'sign in' : 'register'} first to complete your subscription purchase. You will be redirected right back to checkout!
+              </span>
+            </div>
+          )}
 
           {/* ================= PACKAGE ENFORCEMENT & SELECTION BANNER ================= */}
           {selectedPackage && !showPackagePicker ? (

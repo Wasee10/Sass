@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import Card, { CardTitle, CardDescription } from '@/components/ui/Card';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -13,6 +14,8 @@ import {
   Send,
   CheckCircle2,
   ExternalLink,
+  MessagesSquare,
+  ArrowRight,
 } from 'lucide-react';
 
 const DOC_TOPICS = [
@@ -58,13 +61,24 @@ export default function SupportPage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '850px' }}>
-      <div>
-        <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>
-          Help & Support
-        </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
-          Explore knowledge base guides or submit a support ticket to our engineering team.
-        </p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 800, marginBottom: '0.25rem' }}>
+            Help &amp; Support
+          </h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem' }}>
+            Explore knowledge base guides or submit a support ticket to our engineering team.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/tickets"
+          className="btn btn-secondary"
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', borderRadius: 'var(--radius-md)' }}
+        >
+          <MessagesSquare size={16} />
+          <span>Tickets &amp; Feedback Workspace</span>
+          <ArrowRight size={15} />
+        </Link>
       </div>
 
       {/* Search Header */}

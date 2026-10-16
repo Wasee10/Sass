@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
 import { PLANS, COMPARISON_FEATURES } from '@/lib/mock-data';
 import Card, { CardTitle, CardDescription } from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
-import { Check, X, ArrowRight, HelpCircle } from 'lucide-react';
+import { Check, X, ArrowRight, HelpCircle, CreditCard, Smartphone, ShieldCheck, Zap } from 'lucide-react';
 
 export default function PricingSection({ showComparisonDefault = false }) {
+  const { user } = useAuth();
   const [billingInterval, setBillingInterval] = useState('month');
   const [showComparison, setShowComparison] = useState(showComparisonDefault);
 
@@ -124,7 +126,12 @@ export default function PricingSection({ showComparisonDefault = false }) {
               ? (billingInterval === 'year' ? 'pro-yearly' : 'pro-monthly')
               : (billingInterval === 'year' ? 'enterprise-yearly' : 'enterprise');
 
-            const targetHref = `/register?plan=${planSlug}&interval=${billingInterval}`;
+            const checkoutUrl = `/checkout?plan=${planSlug}&interval=${billingInterval}`;
+            const targetHref = isFree
+              ? (user ? '/dashboard' : '/register?plan=free')
+              : user
+              ? checkoutUrl
+              : `/register?plan=${planSlug}&interval=${billingInterval}&redirect=${encodeURIComponent(checkoutUrl)}`;
 
             const handlePlanSelect = () => {
               if (typeof window !== 'undefined') {
@@ -230,12 +237,112 @@ export default function PricingSection({ showComparisonDefault = false }) {
                   className={`btn ${isHighlighted ? 'btn-primary' : 'btn-secondary'}`}
                   style={{ width: '100%' }}
                 >
-                  <span>{plan.cta}</span>
+                  <span>
+                    {isFree
+                      ? (user ? 'Go to Dashboard' : plan.cta)
+                      : user
+                      ? '⚡ Checkout & Pay Now'
+                      : '⚡ Register & Purchase'}
+                  </span>
                   <ArrowRight size={16} />
                 </Link>
+
+                {!isFree && (
+                  <div style={{ textAlign: 'center', marginTop: '0.65rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                      {user ? '⚡ Pay via UddoktaPay (bKash/Nagad/Cards)' : '🔒 Account registration/login required before payment'}
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
+        </div>
+
+        {/* UddoktaPay Supported Payment Channels Ribbon */}
+        <div
+          style={{
+            maxWidth: '920px',
+            margin: '0 auto 3rem auto',
+            padding: '1.25rem 1.75rem',
+            borderRadius: 'var(--radius-xl)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-primary)',
+            boxShadow: 'var(--shadow-sm)',
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1.25rem',
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', textAlign: 'left' }}>
+            <div
+              style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, rgba(225, 29, 72, 0.15), rgba(79, 70, 229, 0.15))',
+                border: '1px solid rgba(225, 29, 72, 0.3)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#e11d48',
+                flexShrink: 0,
+              }}
+            >
+              <CreditCard size={22} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <span>Global & Local Payment Channels</span>
+                <span
+                  style={{
+                    fontSize: '0.6875rem',
+                    fontWeight: 800,
+                    padding: '0.15rem 0.55rem',
+                    borderRadius: '4px',
+                    background: 'rgba(225, 29, 72, 0.1)',
+                    color: '#e11d48',
+                    border: '1px solid rgba(225, 29, 72, 0.25)',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  ⚡ UDDOKTAPAY GATEWAY
+                </span>
+              </div>
+              <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                Pay directly with bKash, Nagad, Rocket, Upay, Visa, MasterCard, or Bank Transfer. Instant activation.
+              </p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
+            {[
+              { name: 'bKash', color: '#e2136e', bg: 'rgba(226, 19, 110, 0.12)' },
+              { name: 'Nagad', color: '#f7931e', bg: 'rgba(247, 147, 30, 0.12)' },
+              { name: 'Rocket', color: '#8c3494', bg: 'rgba(140, 52, 148, 0.12)' },
+              { name: 'Upay', color: '#00a3e0', bg: 'rgba(0, 163, 224, 0.12)' },
+              { name: 'Visa & MC', color: '#2563eb', bg: 'rgba(37, 99, 235, 0.12)' },
+              { name: 'Bank Wire', color: '#10b981', bg: 'rgba(16, 185, 129, 0.12)' },
+            ].map((method, idx) => (
+              <span
+                key={idx}
+                style={{
+                  padding: '0.35rem 0.7rem',
+                  borderRadius: '6px',
+                  background: method.bg,
+                  color: method.color,
+                  fontWeight: 700,
+                  fontSize: '0.75rem',
+                  border: `1px solid ${method.color}33`,
+                }}
+              >
+                {method.name}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* Toggle Detailed Comparison Table */}
