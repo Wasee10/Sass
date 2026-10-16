@@ -17,22 +17,25 @@ export default function PricingSection({ showComparisonDefault = false }) {
         <div style={{ maxWidth: '640px', margin: '0 auto 2.5rem auto' }}>
           <span
             style={{
-              fontSize: '0.875rem',
+              fontSize: '0.8125rem',
               fontWeight: 700,
               color: 'var(--brand-primary)',
               textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              display: 'block',
-              marginBottom: '0.5rem',
+              letterSpacing: '0.1em',
+              display: 'inline-block',
+              marginBottom: '0.75rem',
+              background: 'var(--brand-primary-light)',
+              padding: '0.35rem 0.85rem',
+              borderRadius: '9999px',
             }}
           >
             Transparent Plans
           </span>
-          <h2 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', marginBottom: '1rem' }}>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, letterSpacing: '-0.025em', marginBottom: '1rem', color: 'var(--text-primary)' }}>
             Predictable pricing for every stage
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.0625rem' }}>
-            Plan details and prices are placeholders. Payment processing and subscription changes are not enabled.
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', lineHeight: 1.6 }}>
+            Start with our flexible free tier, or unlock complete production capabilities with our Pro plan.
           </p>
         </div>
 
@@ -87,13 +90,13 @@ export default function PricingSection({ showComparisonDefault = false }) {
               style={{
                 fontSize: '0.6875rem',
                 fontWeight: 700,
-                background: billingInterval === 'year' ? 'rgba(255,255,255,0.25)' : 'var(--success-bg)',
-                color: billingInterval === 'year' ? '#ffffff' : 'var(--success)',
-                padding: '0.15rem 0.45rem',
+                background: billingInterval === 'year' ? 'rgba(255,255,255,0.25)' : 'rgba(16, 185, 129, 0.15)',
+                color: billingInterval === 'year' ? '#ffffff' : '#10b981',
+                padding: '0.15rem 0.5rem',
                 borderRadius: 'var(--radius-full)',
               }}
             >
-              SAVE 17%
+              SAVE 20%
             </span>
           </button>
         </div>
@@ -113,24 +116,45 @@ export default function PricingSection({ showComparisonDefault = false }) {
             const price = billingInterval === 'year' ? plan.priceYearly : plan.priceMonthly;
             const periodText = billingInterval === 'year' ? '/yr' : '/mo';
 
-            let targetHref = plan.href;
-            if (plan.id.includes('pro')) {
-              targetHref = `/checkout?plan=${billingInterval === 'year' ? 'pro-yearly' : 'pro-monthly'}`;
-            }
+            const isEnterprise = plan.id.includes('enterprise');
+            const isFree = plan.id === 'free';
+            const planSlug = isFree
+              ? 'free'
+              : plan.id.includes('pro')
+              ? (billingInterval === 'year' ? 'pro-yearly' : 'pro-monthly')
+              : (billingInterval === 'year' ? 'enterprise-yearly' : 'enterprise');
+
+            const targetHref = `/register?plan=${planSlug}&interval=${billingInterval}`;
+
+            const handlePlanSelect = () => {
+              if (typeof window !== 'undefined') {
+                const pkgData = {
+                  id: planSlug,
+                  planId: planSlug,
+                  name: plan.name,
+                  price,
+                  interval: isFree ? 'forever' : billingInterval === 'year' ? 'year' : 'month',
+                  billingInterval: isFree ? 'forever' : billingInterval === 'year' ? 'year' : 'month',
+                };
+                localStorage.setItem('stratum_chosen_package', JSON.stringify(pkgData));
+                document.cookie = `stratum_chosen_plan=${planSlug}; path=/; max-age=2592000; SameSite=Lax`;
+                document.cookie = `stratum_chosen_interval=${billingInterval}; path=/; max-age=2592000; SameSite=Lax`;
+              }
+            };
 
             return (
               <div
                 key={plan.id}
-                className="card"
+                className="card card-interactive"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  padding: '2rem',
+                  padding: '2.25rem',
                   borderRadius: 'var(--radius-xl)',
                   position: 'relative',
                   border: isHighlighted ? '2px solid var(--brand-primary)' : '1px solid var(--border-primary)',
-                  boxShadow: isHighlighted ? 'var(--shadow-xl)' : 'var(--shadow-md)',
+                  boxShadow: isHighlighted ? '0 20px 40px -15px rgba(79, 70, 229, 0.35)' : 'var(--shadow-sm)',
                   background: 'var(--bg-card)',
                   transform: isHighlighted ? 'scale(1.02)' : 'none',
                 }}
@@ -139,12 +163,21 @@ export default function PricingSection({ showComparisonDefault = false }) {
                   <div
                     style={{
                       position: 'absolute',
-                      top: '-12px',
+                      top: '-14px',
                       left: '50%',
                       transform: 'translateX(-50%)',
+                      background: 'linear-gradient(135deg, var(--brand-primary), #06b6d4)',
+                      color: '#ffffff',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      padding: '0.3rem 0.9rem',
+                      borderRadius: '9999px',
+                      boxShadow: '0 4px 12px rgba(79, 70, 229, 0.35)',
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
                     }}
                   >
-                    <Badge variant="brand">{plan.badge}</Badge>
+                    ★ {plan.badge}
                   </div>
                 )}
 
@@ -193,6 +226,7 @@ export default function PricingSection({ showComparisonDefault = false }) {
 
                 <Link
                   href={targetHref}
+                  onClick={handlePlanSelect}
                   className={`btn ${isHighlighted ? 'btn-primary' : 'btn-secondary'}`}
                   style={{ width: '100%' }}
                 >
@@ -246,52 +280,52 @@ export default function PricingSection({ showComparisonDefault = false }) {
               </thead>
               <tbody>
                 {COMPARISON_FEATURES.map((category, catIdx) => (
-                  <tbody key={catIdx}>
-                    <tr style={{ background: 'var(--bg-secondary)' }}>
-                      <td
-                        colSpan={4}
-                        style={{
-                          padding: '0.75rem 1rem',
-                          fontWeight: 700,
-                          fontSize: '0.8125rem',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.06em',
-                          color: 'var(--brand-primary)',
-                        }}
-                      >
-                        {category.category}
+                  <tr key={`cat-${catIdx}`} style={{ background: 'var(--bg-secondary)' }}>
+                    <td
+                      colSpan={4}
+                      style={{
+                        padding: '0.75rem 1rem',
+                        fontWeight: 700,
+                        fontSize: '0.8125rem',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.06em',
+                        color: 'var(--brand-primary)',
+                      }}
+                    >
+                      {category.category}
+                    </td>
+                  </tr>
+                )).flatMap((catRow, catIdx) => [
+                  catRow,
+                  ...COMPARISON_FEATURES[catIdx].items.map((row, rowIdx) => (
+                    <tr key={`row-${catIdx}-${rowIdx}`} style={{ borderBottom: '1px solid var(--border-primary)' }}>
+                      <td style={{ padding: '0.875rem 1rem', color: 'var(--text-primary)' }}>
+                        {row.name}
+                      </td>
+                      <td style={{ padding: '0.875rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                        {typeof row.free === 'boolean' ? (
+                          row.free ? <Check size={18} color="var(--success)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-muted)" style={{ margin: '0 auto' }} />
+                        ) : (
+                          row.free
+                        )}
+                      </td>
+                      <td style={{ padding: '0.875rem 1rem', textAlign: 'center', fontWeight: 600, color: 'var(--text-primary)' }}>
+                        {typeof row.pro === 'boolean' ? (
+                          row.pro ? <Check size={18} color="var(--success)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-muted)" style={{ margin: '0 auto' }} />
+                        ) : (
+                          row.pro
+                        )}
+                      </td>
+                      <td style={{ padding: '0.875rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                        {typeof row.enterprise === 'boolean' ? (
+                          row.enterprise ? <Check size={18} color="var(--success)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-muted)" style={{ margin: '0 auto' }} />
+                        ) : (
+                          row.enterprise
+                        )}
                       </td>
                     </tr>
-                    {category.items.map((row, rowIdx) => (
-                      <tr key={rowIdx} style={{ borderBottom: '1px solid var(--border-primary)' }}>
-                        <td style={{ padding: '0.875rem 1rem', color: 'var(--text-primary)' }}>
-                          {row.name}
-                        </td>
-                        <td style={{ padding: '0.875rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                          {typeof row.free === 'boolean' ? (
-                            row.free ? <Check size={18} color="var(--success)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-muted)" style={{ margin: '0 auto' }} />
-                          ) : (
-                            row.free
-                          )}
-                        </td>
-                        <td style={{ padding: '0.875rem 1rem', textAlign: 'center', fontWeight: 600, color: 'var(--text-primary)' }}>
-                          {typeof row.pro === 'boolean' ? (
-                            row.pro ? <Check size={18} color="var(--success)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-muted)" style={{ margin: '0 auto' }} />
-                          ) : (
-                            row.pro
-                          )}
-                        </td>
-                        <td style={{ padding: '0.875rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-                          {typeof row.enterprise === 'boolean' ? (
-                            row.enterprise ? <Check size={18} color="var(--success)" style={{ margin: '0 auto' }} /> : <X size={18} color="var(--text-muted)" style={{ margin: '0 auto' }} />
-                          ) : (
-                            row.enterprise
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                ))}
+                  )),
+                ])}
               </tbody>
             </table>
           </div>

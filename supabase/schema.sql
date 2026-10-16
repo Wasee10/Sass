@@ -99,3 +99,25 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- ==============================================================================
+-- 5. USER PACKAGES TABLE (Stores User Selected Package in PostgreSQL)
+-- ==============================================================================
+create table if not exists public.user_packages (
+  id serial primary key,
+  user_id text not null,
+  email text not null,
+  full_name text,
+  plan_id text not null, -- 'free', 'pro-monthly', 'pro-yearly', 'enterprise'
+  plan_name text not null,
+  price numeric default 0,
+  billing_interval text default 'month', -- 'month', 'year', 'forever'
+  status text default 'active',
+  features jsonb default '[]'::jsonb,
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  updated_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  constraint unique_user_package unique (user_id)
+);
+
+create index if not exists idx_user_packages_user_id on public.user_packages (user_id);
+create index if not exists idx_user_packages_email on public.user_packages (email);

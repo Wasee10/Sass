@@ -1,6 +1,7 @@
 import Navbar from '@/components/marketing/Navbar';
 import Hero from '@/components/marketing/Hero';
 import Features from '@/components/marketing/Features';
+import Roadmap from '@/components/marketing/Roadmap';
 import Benefits from '@/components/marketing/Benefits';
 import PricingSection from '@/components/marketing/PricingSection';
 import FaqSection from '@/components/marketing/FaqSection';
@@ -13,6 +14,7 @@ export default function HomePage() {
       <main style={{ flex: 1 }}>
         <Hero />
         <Features />
+        <Roadmap />
         <Benefits />
         <PricingSection />
         <FaqSection />

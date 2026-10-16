@@ -21,7 +21,7 @@ export default function DashboardShell({ children }) {
         }}
       >
         <Header onMenuClick={() => setSidebarOpen(true)} />
-        <main style={{ flex: 1, padding: '2rem 1.75rem', maxWidth: '1200px', width: '100%', margin: '0 auto' }}>
+        <main style={{ flex: 1, padding: '1.75rem 2rem', maxWidth: '1440px', width: '100%', margin: '0 auto' }}>
           {children}
         </main>
       </div>

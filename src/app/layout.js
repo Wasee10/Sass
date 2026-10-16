@@ -2,6 +2,7 @@ import './globals.css';
 import { Bricolage_Grotesque, DM_Sans } from 'next/font/google';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { ToastProvider } from '@/context/ToastContext';
 import CookieNotice from '@/components/CookieNotice';
 
 const headingFont = Bricolage_Grotesque({
@@ -19,21 +20,21 @@ const bodyFont = DM_Sans({
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
   title: {
-    default: 'SaaS Core | Your workspace, made clearer',
-    template: '%s | SaaS Core',
+    default: 'Stratum | Modern Cloud Workspace & Intelligence Platform',
+    template: '%s | Stratum',
   },
-  description: 'A calm, secure workspace for teams to manage projects, accounts, and subscriptions.',
-  keywords: ['SaaS starter', 'Next.js SaaS', 'Supabase Auth', 'Subscription billing'],
+  description: 'High-velocity cloud workspace, developer telemetry, and subscription infrastructure powered by Next.js and Firebase.',
+  keywords: ['Stratum', 'Cloud platform', 'Next.js SaaS', 'Firebase Auth', 'Firestore', 'Developer Workspace', 'Telemetry'],
   openGraph: {
     type: 'website',
-    siteName: 'SaaS Core',
-    title: 'SaaS Core | Your workspace, made clearer',
-    description: 'A calm, secure workspace for teams to manage projects, accounts, and subscriptions.',
+    siteName: 'Stratum',
+    title: 'Stratum | Modern Cloud Workspace & Intelligence Platform',
+    description: 'High-velocity cloud workspace, developer telemetry, and subscription infrastructure powered by Next.js and Firebase.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SaaS Core | Your workspace, made clearer',
-    description: 'A calm, secure workspace for teams to manage projects, accounts, and subscriptions.',
+    title: 'Stratum | Modern Cloud Workspace & Intelligence Platform',
+    description: 'High-velocity cloud workspace, developer telemetry, and subscription infrastructure powered by Next.js and Firebase.',
   },
   robots: {
     index: true,
@@ -43,12 +44,19 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${headingFont.variable} ${bodyFont.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={`${headingFont.variable} ${bodyFont.variable}`}
+    >
       <body>
         <ThemeProvider>
           <AuthProvider>
-            {children}
-            <CookieNotice />
+            <ToastProvider>
+              {children}
+              <CookieNotice />
+            </ToastProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

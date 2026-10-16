@@ -3,16 +3,19 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import { useToast } from '@/context/ToastContext';
 import ThemeToggle from '@/components/ThemeToggle';
 import Badge from '@/components/ui/Badge';
 import { Menu, LogOut, User, Sparkles, ChevronDown } from 'lucide-react';
 
 export default function Header({ onMenuClick }) {
   const { user, profile, signOut, isConfigured } = useAuth();
+  const toast = useToast();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.displayName || user?.email?.split('@')[0] || 'User';
   const email = user?.email || 'user@example.com';
+  const avatarUrl = user?.photoURL || profile?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=3161F8&color=fff&bold=true`;
 
   return (
     <header
@@ -75,7 +78,7 @@ export default function Header({ onMenuClick }) {
               gap: '0.65rem',
               background: 'var(--bg-secondary)',
               border: '1px solid var(--border-primary)',
-              padding: '0.35rem 0.75rem',
+              padding: '0.3rem 0.75rem 0.3rem 0.35rem',
               borderRadius: 'var(--radius-full)',
               cursor: 'pointer',
               color: 'var(--text-primary)',
@@ -83,8 +86,8 @@ export default function Header({ onMenuClick }) {
           >
             <div
               style={{
-                width: '28px',
-                height: '28px',
+                width: '30px',
+                height: '30px',
                 borderRadius: '50%',
                 background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-secondary))',
                 color: '#ffffff',
@@ -93,9 +96,21 @@ export default function Header({ onMenuClick }) {
                 justifyContent: 'center',
                 fontWeight: 700,
                 fontSize: '0.8125rem',
+                overflow: 'hidden',
+                position: 'relative',
+                flexShrink: 0,
               }}
             >
-              {displayName.charAt(0).toUpperCase()}
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={displayName}
+                  referrerPolicy="no-referrer"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                displayName.charAt(0).toUpperCase()
+              )}
             </div>
             <div style={{ textAlign: 'left', display: 'none' }} className="user-details">
               <span style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, lineHeight: 1.2 }}>
@@ -125,13 +140,34 @@ export default function Header({ onMenuClick }) {
                   padding: '0.75rem',
                   borderBottom: '1px solid var(--border-primary)',
                   marginBottom: '0.35rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.65rem',
                 }}
               >
-                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  {displayName}
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                  }}
+                >
+                  <img
+                    src={avatarUrl}
+                    alt={displayName}
+                    referrerPolicy="no-referrer"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                 </div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {email}
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {displayName}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {email}
+                  </div>
                 </div>
               </div>
 
@@ -153,9 +189,10 @@ export default function Header({ onMenuClick }) {
               </Link>
 
               <button
-                onClick={() => {
+                onClick={async () => {
                   setDropdownOpen(false);
-                  signOut();
+                  toast.info('Signed Out', 'You have been safely signed out.');
+                  await signOut();
                 }}
                 style={{
                   display: 'flex',

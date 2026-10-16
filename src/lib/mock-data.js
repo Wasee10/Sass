@@ -52,6 +52,7 @@ export const PLANS = [
   },
   {
     id: 'enterprise',
+    yearlyId: 'enterprise-yearly',
     name: 'Enterprise',
     description: 'Maximum security, custom volume, and bespoke integration for large teams.',
     priceMonthly: 99,

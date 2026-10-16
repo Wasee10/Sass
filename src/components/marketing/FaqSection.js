@@ -11,18 +11,21 @@ export default function FaqSection() {
         <div style={{ maxWidth: '640px', margin: '0 auto 3rem auto', textAlign: 'center' }}>
           <span
             style={{
-              fontSize: '0.875rem',
+              fontSize: '0.8125rem',
               fontWeight: 700,
               color: 'var(--brand-primary)',
               textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              display: 'block',
-              marginBottom: '0.5rem',
+              letterSpacing: '0.1em',
+              display: 'inline-block',
+              marginBottom: '0.75rem',
+              background: 'var(--brand-primary-light)',
+              padding: '0.35rem 0.85rem',
+              borderRadius: '9999px',
             }}
           >
             Clear Answers
           </span>
-          <h2 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', marginBottom: '1rem' }}>
+          <h2 style={{ fontSize: 'clamp(2.2rem, 3.8vw, 3rem)', fontWeight: 800, letterSpacing: '-0.025em', marginBottom: '1rem', color: 'var(--text-primary)' }}>
             Frequently Asked Questions
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1.0625rem' }}>

@@ -5,26 +5,34 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import {
   LayoutDashboard,
+  Gauge,
   CreditCard,
+  MessagesSquare,
   Settings,
   HelpCircle,
   Layers,
   ArrowUpRight,
   Shield,
   X,
+  ChevronDown,
 } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 
 const NAV_ITEMS = [
   {
-    name: 'Overview',
+    name: 'Dashboard',
     href: '/dashboard',
-    icon: LayoutDashboard,
+    icon: Gauge,
   },
   {
-    name: 'Billing & Plans',
+    name: 'Billing & License',
     href: '/dashboard/billing',
     icon: CreditCard,
+  },
+  {
+    name: 'Tickets & Feedback',
+    href: '/dashboard#tickets',
+    icon: MessagesSquare,
   },
   {
     name: 'Account Settings',
@@ -40,13 +48,17 @@ const NAV_ITEMS = [
 
 export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname();
-  const { subscription } = useAuth();
+  const { user, profile, subscription } = useAuth();
 
-  const planName = subscription?.plan_id === 'pro-yearly'
-    ? 'Pro Yearly'
-    : subscription?.plan_id === 'pro-monthly'
-    ? 'Pro Monthly'
-    : 'Free Plan';
+  const isEnterprise = subscription?.plan_id?.includes('enterprise') || subscription?.plan_name?.toLowerCase().includes('enterprise');
+  const isYearly = subscription?.billing_interval === 'year' || subscription?.plan_id?.includes('yearly');
+  const isFree = subscription?.plan_id === 'free' || subscription?.plan_name?.toLowerCase().includes('free');
+
+  const planName = isEnterprise
+    ? (isYearly ? 'Enterprise Yearly' : 'Enterprise')
+    : isFree
+    ? 'Free Starter'
+    : (isYearly ? 'Pro Yearly' : 'Pro Monthly');
 
   return (
     <>
@@ -116,7 +128,7 @@ export default function Sidebar({ isOpen, onClose }) {
             >
               <Layers size={18} />
             </div>
-            <span>SaaS<span style={{ color: 'var(--brand-primary)' }}>Core</span></span>
+            <span>Stratum<span style={{ color: 'var(--brand-primary)' }}>Cloud</span></span>
           </Link>
 
           <button
@@ -133,6 +145,59 @@ export default function Sidebar({ isOpen, onClose }) {
           >
             <X size={20} />
           </button>
+        </div>
+
+        {/* User Workspace Profile Card (VisActor Style) */}
+        <div style={{ padding: '0.875rem 1rem 0.5rem 1rem' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '0.5rem 0.65rem',
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border-primary)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', minWidth: 0 }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #3161F8, #60C2FB)',
+                  color: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '0.8125rem',
+                  flexShrink: 0,
+                }}
+              >
+                {(profile?.full_name || user?.email || 'A').charAt(0).toUpperCase()}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                <span
+                  style={{
+                    fontSize: '0.8125rem',
+                    fontWeight: 600,
+                    color: 'var(--text-primary)',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {profile?.full_name || 'Alex Thorne'}
+                </span>
+                <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>
+                  Agent Admin
+                </span>
+              </div>
+            </div>
+            <ChevronDown size={14} color="var(--text-muted)" />
+          </div>
         </div>
 
         {/* Navigation Items */}
@@ -223,6 +288,27 @@ export default function Sidebar({ isOpen, onClose }) {
               <span>{subscription?.plan_id === 'free' ? 'Upgrade Plan' : 'Manage Subscription'}</span>
               <ArrowUpRight size={14} />
             </Link>
+          </div>
+        </div>
+
+        {/* Powered by VisActor & Apex Badge */}
+        <div
+          style={{
+            padding: '0.65rem 1rem 1.25rem',
+            textAlign: 'center',
+            fontSize: '0.6875rem',
+            color: 'var(--text-muted)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.25rem',
+          }}
+        >
+          <span style={{ letterSpacing: '0.04em', textTransform: 'uppercase', fontSize: '0.625rem' }}>
+            Powered by
+          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+            <span style={{ color: '#3161F8' }}>◆</span> Stratum Intelligence
           </div>
         </div>
       </aside>

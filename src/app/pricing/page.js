@@ -4,7 +4,7 @@ import FaqSection from '@/components/marketing/FaqSection';
 import Footer from '@/components/marketing/Footer';
 
 export const metadata = {
-  title: 'Pricing Plans & Subscriptions | SaaS Core',
+  title: 'Pricing Plans & Subscriptions | Stratum',
   description: 'Explore flexible monthly and yearly subscription plans with full feature comparisons.',
 };
 

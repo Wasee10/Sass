@@ -48,7 +48,7 @@ export default function Footer() {
               >
                 <Layers size={18} />
               </div>
-              <span>SaaS<span style={{ color: 'var(--brand-primary)' }}>Core</span></span>
+              <span>Stratum<span style={{ color: 'var(--brand-primary)' }}>Cloud</span></span>
             </Link>
             <p
               style={{
@@ -59,7 +59,7 @@ export default function Footer() {
                 marginBottom: '1.5rem',
               }}
             >
-              The modular, production-ready SaaS starter for Next.js and Supabase.
+              The modern enterprise cloud workspace powered by Next.js & Firebase.
               Engineered for velocity, security, and scalability.
             </p>
             <div
@@ -100,6 +100,9 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/pricing" style={{ color: 'var(--text-secondary)' }}>Subscription Pricing</Link>
+              </li>
+              <li>
+                <Link href="/dashboard/billing" style={{ color: 'var(--text-secondary)' }}>Billing & License</Link>
               </li>
               <li>
                 <Link href="/dashboard" style={{ color: 'var(--text-secondary)' }}>Dashboard Shell</Link>
@@ -179,9 +182,9 @@ export default function Footer() {
             color: 'var(--text-muted)',
           }}
         >
-          <p>© 2026 SaaS Core Starter. All rights reserved.</p>
+          <p>© 2026 Stratum. All rights reserved.</p>
           <p style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            Built with Next.js & Supabase
+            Built with Next.js & Firebase
           </p>
         </div>
       </div>
