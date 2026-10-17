@@ -11,14 +11,15 @@ import {
   Check,
   Code2,
   Sparkles,
+  Search,
 } from 'lucide-react';
 
 export default function Features() {
   return (
-    <section id="features" style={{ padding: '6rem 0', background: 'var(--bg-secondary)', position: 'relative' }}>
+    <section id="features" style={{ padding: '5rem 0', background: 'var(--bg-secondary)', position: 'relative' }}>
       <div className="container">
         {/* Section Header */}
-        <div style={{ maxWidth: '680px', margin: '0 auto 4rem auto', textAlign: 'center' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto 3.5rem auto', textAlign: 'center' }}>
           <div
             style={{
               display: 'inline-flex',
@@ -40,7 +41,7 @@ export default function Features() {
           </div>
           <h2
             style={{
-              fontSize: 'clamp(2.2rem, 3.8vw, 3.25rem)',
+              fontSize: 'clamp(2rem, 3.8vw, 3.25rem)',
               fontWeight: 800,
               letterSpacing: '-0.025em',
               marginBottom: '1rem',
@@ -50,31 +51,15 @@ export default function Features() {
           >
             Everything you need to launch, scale, and monetize
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', lineHeight: 1.6 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.0625rem', lineHeight: 1.6 }}>
             Every foundational layer has been engineered with battle-tested standards, so you can build your unique product features without rebuilding table stakes.
           </p>
         </div>
 
-        {/* Bento Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            gap: '1.5rem',
-          }}
-        >
-          {/* Card 1: Large Bento Tile - Supabase Auth & Security (Spans 7 cols) */}
-          <div
-            className="card card-interactive"
-            style={{
-              gridColumn: 'span 7',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              minHeight: '340px',
-              padding: '2rem',
-            }}
-          >
+        {/* Responsive Bento Grid */}
+        <div className="features-grid">
+          {/* Card 1: Large Bento Tile - Supabase Auth & Security */}
+          <div className="card card-interactive bento-card bento-span-7">
             <div>
               <div
                 style={{
@@ -91,11 +76,11 @@ export default function Features() {
               >
                 <Lock size={22} />
               </div>
-              <h3 style={{ fontSize: '1.375rem', fontWeight: 700, marginBottom: '0.65rem', color: 'var(--text-primary)' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.65rem', color: 'var(--text-primary)' }}>
                 Turnkey Supabase Authentication
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', lineHeight: 1.6, marginBottom: '1.5rem', maxWidth: '480px' }}>
-                Complete password & email login, Google OAuth, session refresh, email verification, and password reset flows with HTTP-only cookie protection.
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+                Complete password &amp; email login, Google OAuth, session refresh, email verification, and password reset flows with HTTP-only cookie protection.
               </p>
             </div>
 
@@ -105,10 +90,11 @@ export default function Features() {
                 background: 'var(--bg-primary)',
                 border: '1px solid var(--border-primary)',
                 borderRadius: 'var(--radius-md)',
-                padding: '1rem',
+                padding: '0.85rem 1rem',
                 fontFamily: 'monospace',
                 fontSize: '0.8125rem',
                 color: 'var(--text-secondary)',
+                overflowX: 'auto',
               }}
             >
               <div style={{ color: '#10b981', marginBottom: '0.25rem' }}>// Verified server-side session:</div>
@@ -117,39 +103,29 @@ export default function Features() {
             </div>
           </div>
 
-          {/* Card 2: Medium Bento Tile - Subscription & Monetization UI (Spans 5 cols) */}
-          <div
-            className="card card-interactive"
-            style={{
-              gridColumn: 'span 5',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              minHeight: '340px',
-              padding: '2rem',
-            }}
-          >
+          {/* Card 2: Medium Bento Tile - Keyword Research Engine */}
+          <div className="card card-interactive bento-card bento-span-5">
             <div>
               <div
                 style={{
                   width: '44px',
                   height: '44px',
                   borderRadius: 'var(--radius-md)',
-                  background: 'rgba(16, 185, 129, 0.1)',
+                  background: 'rgba(49, 97, 248, 0.1)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#10b981',
+                  color: '#3161F8',
                   marginBottom: '1.25rem',
                 }}
               >
-                <CreditCard size={22} />
+                <Search size={22} />
               </div>
-              <h3 style={{ fontSize: '1.375rem', fontWeight: 700, marginBottom: '0.65rem', color: 'var(--text-primary)' }}>
-                Subscription &amp; Billing UI
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.65rem', color: 'var(--text-primary)' }}>
+                Live Keyword Research Engine
               </h3>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9375rem', lineHeight: 1.6 }}>
-                Pre-built pricing tiers, checkout routing, and customer invoice history. Designed for seamless webhook connection to Stripe or Lemon Squeezy.
+                Collect up to 100 genuine suggestions directly from Google Search Autocomplete and YouTube video search across 16 countries and languages.
               </p>
             </div>
 
@@ -162,26 +138,47 @@ export default function Features() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.5rem',
               }}
             >
               <div>
-                <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)' }}>Pro Plan Tier</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>$29 / month billed annually</div>
+                <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)' }}>Google &amp; YouTube Autocomplete</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>100 unique long-tail keywords per query</div>
               </div>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '0.25rem 0.65rem', borderRadius: '9999px' }}>
-                Active Status
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#3161F8', background: 'rgba(49, 97, 248, 0.1)', padding: '0.25rem 0.65rem', borderRadius: '9999px' }}>
+                Instant Telemetry
               </span>
             </div>
           </div>
 
-          {/* Card 3: Medium Bento Tile - PostgreSQL & RLS (Spans 4 cols) */}
-          <div
-            className="card card-interactive"
-            style={{
-              gridColumn: 'span 4',
-              padding: '1.75rem',
-            }}
-          >
+          {/* Card 3: Subscription & UddoktaPay Billing UI */}
+          <div className="card card-interactive bento-card bento-span-4">
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: 'var(--radius-md)',
+                background: 'rgba(16, 185, 129, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#10b981',
+                marginBottom: '1rem',
+              }}
+            >
+              <CreditCard size={20} />
+            </div>
+            <h3 style={{ fontSize: '1.1875rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
+              UddoktaPay &amp; Billing UI
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.55 }}>
+              Integrated checkout for bKash, Nagad, Rocket, Cards, and automated vector-rendered PDF tax receipts.
+            </p>
+          </div>
+
+          {/* Card 4: PostgreSQL Schema & Strict RLS */}
+          <div className="card card-interactive bento-card bento-span-4">
             <div
               style={{
                 width: '40px',
@@ -205,45 +202,8 @@ export default function Features() {
             </p>
           </div>
 
-          {/* Card 4: Medium Bento Tile - Responsive Dashboard Shell (Spans 4 cols) */}
-          <div
-            className="card card-interactive"
-            style={{
-              gridColumn: 'span 4',
-              padding: '1.75rem',
-            }}
-          >
-            <div
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: 'var(--radius-md)',
-                background: 'rgba(14, 165, 233, 0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#0ea5e9',
-                marginBottom: '1rem',
-              }}
-            >
-              <Layout size={20} />
-            </div>
-            <h3 style={{ fontSize: '1.1875rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
-              Responsive App Shell
-            </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.55 }}>
-              Clean sidebar workspace, account profile controls, password updates, and customer support portal pre-configured out of the box.
-            </p>
-          </div>
-
-          {/* Card 5: Medium Bento Tile - Adaptive Light & Dark Theming (Spans 4 cols) */}
-          <div
-            className="card card-interactive"
-            style={{
-              gridColumn: 'span 4',
-              padding: '1.75rem',
-            }}
-          >
+          {/* Card 5: Adaptive Light & Dark Theming */}
+          <div className="card card-interactive bento-card bento-span-4">
             <div
               style={{
                 width: '40px',
@@ -268,6 +228,54 @@ export default function Features() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(12, 1fr);
+          gap: 1.5rem;
+        }
+        .bento-card {
+          display: flex;
+          flex-direction: column;
+          justifyContent: space-between;
+          padding: 2rem;
+          min-height: 320px;
+        }
+        .bento-span-7 {
+          grid-column: span 7;
+        }
+        .bento-span-5 {
+          grid-column: span 5;
+        }
+        .bento-span-4 {
+          grid-column: span 4;
+          min-height: auto;
+          padding: 1.75rem;
+        }
+        @media (max-width: 1024px) {
+          .bento-span-7,
+          .bento-span-5 {
+            grid-column: span 6;
+          }
+          .bento-span-4 {
+            grid-column: span 6;
+          }
+        }
+        @media (max-width: 768px) {
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+          .bento-span-7,
+          .bento-span-5,
+          .bento-span-4 {
+            grid-column: span 1 !important;
+            padding: 1.35rem 1.15rem !important;
+            min-height: auto !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

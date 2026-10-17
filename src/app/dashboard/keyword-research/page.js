@@ -369,7 +369,7 @@ export default function KeywordResearchPage() {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
                   gap: '0.85rem',
                 }}
               >
@@ -433,7 +433,7 @@ export default function KeywordResearchPage() {
             </div>
 
             {/* Setting 2 & 3: Language & Country (Searchable Dropdowns) */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1.25rem' }}>
               {/* Language Searchable Dropdown */}
               <div style={{ position: 'relative' }} ref={langRef}>
                 <label style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '0.45rem' }}>
@@ -749,7 +749,7 @@ export default function KeywordResearchPage() {
           )}
 
           {/* Action Row */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+          <div className="research-action-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
             <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               <Layers size={14} />
               <span>Collects base queries, alphabet variations (a-z), and intent modifiers up to 100 unique results.</span>
@@ -1001,8 +1001,8 @@ export default function KeywordResearchPage() {
               background: 'var(--bg-secondary)',
             }}
           >
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '540px', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
                 <thead>
                   <tr
                     style={{
@@ -1222,6 +1222,19 @@ export default function KeywordResearchPage() {
           </div>
         </Card>
       )}
+
+      <style jsx global>{`
+        @media (max-width: 640px) {
+          .research-action-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+          }
+          .research-action-row button[type="submit"] {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

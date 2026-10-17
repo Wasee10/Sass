@@ -564,7 +564,7 @@ function CheckoutContent() {
                   </div>
 
                   {/* Customer details input fields */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="customer-fields-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
                     <div>
                       <label style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)', display: 'block', marginBottom: '0.4rem' }}>
                         Billing Name *
@@ -1048,6 +1048,20 @@ function CheckoutContent() {
           </div>
         </div>
       </main>
+
+      <style jsx global>{`
+        @media (max-width: 960px) {
+          .checkout-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1.75rem !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .customer-fields-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
 
       <Footer />
     </div>

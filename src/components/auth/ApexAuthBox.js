@@ -449,6 +449,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
 
   return (
     <div
+      className="apex-auth-container"
       style={{
         width: '100%',
         maxWidth: '1160px',
@@ -466,6 +467,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
     >
       {/* ================= LEFT COLUMN: HERO BRANDING PANEL ================= */}
       <div
+        className="apex-auth-branding-panel"
         style={{
           flex: '1 1 440px',
           background: '#0e1424',
@@ -628,6 +630,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
 
       {/* ================= RIGHT COLUMN: INTERACTIVE AUTH BOX ================= */}
       <div
+        className="apex-auth-form-panel"
         style={{
           flex: '1 1 480px',
           padding: '2.5rem 2.25rem',
@@ -1224,6 +1227,34 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
           </div>
         </div>
       </div>
+
+      <style jsx global>{`
+        @media (max-width: 900px) {
+          .apex-auth-container {
+            flex-direction: column !important;
+            margin: 1rem auto !important;
+          }
+          .apex-auth-branding-panel {
+            padding: 2rem 1.5rem !important;
+            min-height: auto !important;
+          }
+          .apex-auth-form-panel {
+            padding: 2rem 1.5rem !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .apex-auth-branding-panel {
+            display: none !important;
+          }
+          .apex-auth-form-panel {
+            padding: 1.5rem 1rem !important;
+          }
+          .apex-auth-container {
+            border-radius: var(--radius-lg) !important;
+            box-shadow: var(--shadow-md) !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -1191,6 +1191,7 @@ export default function BillingAndLicensePage() {
     <div style={{ paddingBottom: '5rem' }}>
       {/* ================= TOP SUB-HEADER & BREADCRUMBS ================= */}
       <div
+        className="billing-top-banner"
         style={{
           background: 'var(--bg-secondary)',
           borderBottom: '1px solid var(--border-primary)',
@@ -3428,6 +3429,21 @@ export default function BillingAndLicensePage() {
           </div>
         </div>
       )}
+
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .billing-top-banner {
+            margin: -1.25rem -1rem 1.5rem -1rem !important;
+            padding: 1.25rem 1rem 0 1rem !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .billing-top-banner {
+            margin: -1rem -0.75rem 1.25rem -0.75rem !important;
+            padding: 1rem 0.75rem 0 0.75rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

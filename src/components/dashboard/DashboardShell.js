@@ -21,7 +21,10 @@ export default function DashboardShell({ children }) {
         }}
       >
         <Header onMenuClick={() => setSidebarOpen(true)} />
-        <main style={{ flex: 1, padding: '1.75rem 2rem', maxWidth: '1440px', width: '100%', margin: '0 auto' }}>
+        <main
+          className="dashboard-main-area"
+          style={{ flex: 1, padding: '1.75rem 2rem', maxWidth: '1440px', width: '100%', margin: '0 auto' }}
+        >
           {children}
         </main>
       </div>
@@ -29,6 +32,16 @@ export default function DashboardShell({ children }) {
         @media (max-width: 1024px) {
           .dashboard-main-content {
             margin-left: 0 !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .dashboard-main-area {
+            padding: 1.25rem 1rem !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .dashboard-main-area {
+            padding: 1rem 0.75rem !important;
           }
         }
       `}</style>

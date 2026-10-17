@@ -139,6 +139,13 @@ button, input, select, textarea {
   padding-right: 1.5rem;
 }
 
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 /* Typography styles */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
@@ -450,3 +457,78 @@ h1, h2, h3, h4, h5, h6 {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ================= COMPREHENSIVE RESPONSIVE UTILITIES ================= */
+
+/* Responsive 12-Column Grid with Auto-Collapsing */
+.grid-responsive-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .grid-responsive-12 {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-responsive-12 {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem;
+  }
+}
+
+/* Table Responsive Scrolling Wrapper */
+.table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--radius-md);
+  position: relative;
+}
+
+.table-responsive-wrapper table {
+  min-width: 580px;
+}
+
+/* Fluid Touch Targets for Interactive Elements */
+@media (max-width: 640px) {
+  .btn {
+    min-height: 42px;
+  }
+
+  .form-input {
+    min-height: 44px;
+    font-size: 16px !important; /* Prevents auto-zoom on iOS Safari */
+  }
+
+  /* Safe Padding for Cards on Narrow Viewports */
+  .card-responsive-pad {
+    padding: 1.25rem 1rem !important;
+  }
+}
+
+/* Responsive Visibility Helpers */
+.hide-on-mobile {
+  display: block;
+}
+
+.show-on-mobile {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+  .show-on-mobile {
+    display: block !important;
+  }
+  .show-on-mobile-flex {
+    display: flex !important;
+  }
+}
+

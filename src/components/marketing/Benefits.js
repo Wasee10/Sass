@@ -4,13 +4,13 @@ import { Zap, ShieldAlert, Code2, Sparkles, Check, X, Clock, ShieldCheck } from 
 
 export default function Benefits() {
   return (
-    <section id="benefits" style={{ padding: '6.5rem 0', position: 'relative' }}>
+    <section id="benefits" style={{ padding: '5rem 0', position: 'relative' }}>
       <div className="container">
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
-            gap: '4rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+            gap: 'clamp(2rem, 4vw, 4rem)',
             alignItems: 'center',
           }}
         >
@@ -37,7 +37,7 @@ export default function Benefits() {
             </div>
             <h2
               style={{
-                fontSize: 'clamp(2.2rem, 3.8vw, 3rem)',
+                fontSize: 'clamp(1.85rem, 3.8vw, 3rem)',
                 fontWeight: 800,
                 letterSpacing: '-0.025em',
                 marginBottom: '1.25rem',
@@ -47,7 +47,7 @@ export default function Benefits() {
             >
               Focus on your product idea, not plumbing
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.125rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '1.0625rem', marginBottom: '2rem', lineHeight: 1.6 }}>
               Avoid spending three weeks rebuilding authentication redirects, responsive navigation, and account settings from scratch.
               Start with a clear, audited foundation and connect only what makes your SaaS unique.
             </p>
@@ -56,8 +56,8 @@ export default function Benefits() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gap: '1rem',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(85px, 1fr))',
+                gap: '0.75rem',
                 marginBottom: '2.5rem',
                 padding: '1.25rem',
                 background: 'var(--bg-secondary)',

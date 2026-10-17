@@ -123,7 +123,7 @@ export default function AccountSettingsPage() {
       </div>
 
       {/* Profile Details Form */}
-      <Card style={{ padding: '2rem' }}>
+      <Card style={{ padding: 'clamp(1.25rem, 3.5vw, 2rem)' }}>
         <CardTitle style={{ marginBottom: '0.35rem' }}>Personal Profile</CardTitle>
         <CardDescription style={{ marginBottom: '1.5rem' }}>
           Your identity details associated with team workspaces and billing receipts.
@@ -181,7 +181,7 @@ export default function AccountSettingsPage() {
       </Card>
 
       {/* Security & Password */}
-      <Card style={{ padding: '2rem' }}>
+      <Card style={{ padding: 'clamp(1.25rem, 3.5vw, 2rem)' }}>
         <CardTitle style={{ marginBottom: '0.35rem' }}>Security & Password</CardTitle>
         <CardDescription style={{ marginBottom: '1.5rem' }}>
           Ensure your account uses a strong, unique password to prevent unauthorized access.
@@ -234,7 +234,7 @@ export default function AccountSettingsPage() {
       </Card>
 
       {/* Danger Zone */}
-      <Card style={{ padding: '2rem', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+      <Card style={{ padding: 'clamp(1.25rem, 3.5vw, 2rem)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.5rem' }}>
           <ShieldAlert size={20} color="var(--danger)" />
           <h3 style={{ fontSize: '1.25rem', color: 'var(--danger)', fontWeight: 600 }}>Danger Zone</h3>

@@ -82,7 +82,7 @@ export default function SupportPage() {
       </div>
 
       {/* Search Header */}
-      <Card style={{ padding: '2rem', textAlign: 'center', background: 'var(--bg-secondary)' }}>
+      <Card style={{ padding: 'clamp(1.25rem, 3.5vw, 2rem)', textAlign: 'center', background: 'var(--bg-secondary)' }}>
         <h3 style={{ fontSize: '1.35rem', fontWeight: 700, marginBottom: '0.5rem' }}>
           How can we assist you today?
         </h3>
@@ -102,7 +102,7 @@ export default function SupportPage() {
       </Card>
 
       {/* Recommended Documentation Topics */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1.25rem' }}>
         {DOC_TOPICS.map((topic, idx) => {
           const Icon = topic.icon;
           return (
@@ -153,7 +153,7 @@ export default function SupportPage() {
       </div>
 
       {/* Support Ticket Submission Form */}
-      <Card style={{ padding: '2rem' }}>
+      <Card style={{ padding: 'clamp(1.25rem, 3.5vw, 2rem)' }}>
         <CardTitle style={{ marginBottom: '0.35rem' }}>Submit a Support Ticket</CardTitle>
         <CardDescription style={{ marginBottom: '1.5rem' }}>
           Our engineering support team monitors inquiries around the clock.

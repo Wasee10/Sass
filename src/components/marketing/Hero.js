@@ -79,7 +79,7 @@ export default function Hero() {
         {/* Main Headline */}
         <h1
           style={{
-            fontSize: 'clamp(2.5rem, 5.2vw, 4.5rem)',
+            fontSize: 'clamp(2rem, 5vw, 4.25rem)',
             fontWeight: 800,
             lineHeight: 1.12,
             letterSpacing: '-0.035em',
@@ -99,7 +99,7 @@ export default function Hero() {
         {/* Subtitle */}
         <p
           style={{
-            fontSize: 'clamp(1.0625rem, 1.8vw, 1.25rem)',
+            fontSize: 'clamp(1rem, 1.8vw, 1.25rem)',
             color: 'var(--text-secondary)',
             maxWidth: '700px',
             marginLeft: 'auto',
@@ -114,6 +114,7 @@ export default function Hero() {
 
         {/* CTAs */}
         <div
+          className="hero-cta-group"
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -280,7 +281,7 @@ export default function Hero() {
             </div>
 
             {/* Main Dashboard Area */}
-            <div style={{ flex: 1, padding: '1.75rem', background: 'var(--bg-card)' }}>
+            <div className="hero-mockup-inner" style={{ flex: 1, padding: '1.75rem', background: 'var(--bg-card)' }}>
               {/* Header Title inside Dashboard */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
@@ -300,6 +301,7 @@ export default function Hero() {
 
               {/* 3 Metric KPI Cards */}
               <div
+                className="hero-kpi-grid"
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -348,7 +350,7 @@ export default function Hero() {
               </div>
 
               {/* Recent Activity Table Preview */}
-              <div style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', padding: '1rem' }}>
+              <div style={{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-primary)', padding: '1rem', overflowX: 'auto' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-muted)' }}>
                   <span>RECENT TRANSACTIONS &amp; SUBSCRIPTIONS</span>
                   <span style={{ color: 'var(--brand-primary)', cursor: 'pointer' }}>View All →</span>
@@ -370,6 +372,25 @@ export default function Hero() {
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 640px) {
+          :global(.hero-cta-group) {
+            flex-direction: column !important;
+            width: 100% !important;
+          }
+          :global(.hero-cta-group a) {
+            width: 100% !important;
+            text-align: center;
+          }
+          .hero-mockup-inner {
+            padding: 1rem !important;
+          }
+          .hero-kpi-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }

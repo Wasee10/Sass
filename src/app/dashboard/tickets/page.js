@@ -385,6 +385,7 @@ export default function TicketsAndFeedbackPage() {
     <div style={{ paddingBottom: '5rem' }}>
       {/* ================= HEADER & BREADCRUMBS ================= */}
       <div
+        className="tickets-top-banner"
         style={{
           background: 'var(--bg-secondary)',
           borderBottom: '1px solid var(--border-primary)',
@@ -814,6 +815,7 @@ export default function TicketsAndFeedbackPage() {
                     return (
                       <div
                         key={ticket.id}
+                        className="ticket-list-row"
                         onClick={() => setSelectedTicket(ticket)}
                         style={{
                           display: 'flex',
@@ -1568,6 +1570,28 @@ export default function TicketsAndFeedbackPage() {
           </div>
         </div>
       )}
+
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .tickets-top-banner {
+            margin: -1.25rem -1rem 1.5rem -1rem !important;
+            padding: 1.25rem 1rem 0 1rem !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .tickets-top-banner {
+            margin: -1rem -0.75rem 1.25rem -0.75rem !important;
+            padding: 1rem 0.75rem 0 0.75rem !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .ticket-list-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 0.85rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

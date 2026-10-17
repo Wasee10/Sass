@@ -232,7 +232,7 @@ export default function VisActorDashboard() {
         </div>
 
         {/* Date Selector & Action Buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div className="dashboard-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
           {/* Date Picker Button */}
           <div style={{ position: 'relative' }}>
             <button
@@ -378,7 +378,7 @@ export default function VisActorDashboard() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
           gap: '1.25rem',
         }}
       >
@@ -708,7 +708,7 @@ export default function VisActorDashboard() {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
           gap: '1.5rem',
         }}
       >
@@ -1267,7 +1267,7 @@ export default function VisActorDashboard() {
             </div>
 
             {/* Satisfaction Rating Triad (VisActor Authentic Spec) */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 95px), 1fr))', gap: '1rem' }}>
               {/* Positive: 80% with green thumbs up */}
               <div
                 style={{
@@ -1607,6 +1607,15 @@ export default function VisActorDashboard() {
         @media (max-width: 1024px) {
           .chart-main-card {
             grid-column: span 1 !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .dashboard-header-actions {
+            width: 100% !important;
+          }
+          .dashboard-header-actions button {
+            flex: 1 1 auto !important;
+            justify-content: center !important;
           }
         }
       `}</style>

@@ -55,11 +55,13 @@ export default function Modal({
         style={{
           width: '100%',
           maxWidth,
+          maxHeight: 'calc(100vh - 2.5rem)',
+          overflowY: 'auto',
           backgroundColor: 'var(--bg-card)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-xl)',
           position: 'relative',
-          padding: '1.75rem',
+          padding: 'clamp(1.25rem, 3.5vw, 1.75rem)',
         }}
       >
         <button

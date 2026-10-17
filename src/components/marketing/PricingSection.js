@@ -107,8 +107,8 @@ export default function PricingSection({ showComparisonDefault = false }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '2rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
+            gap: '1.75rem',
             textAlign: 'left',
             marginBottom: '3.5rem',
           }}
@@ -364,11 +364,12 @@ export default function PricingSection({ showComparisonDefault = false }) {
             style={{
               marginTop: '2.5rem',
               overflowX: 'auto',
-              padding: '2rem',
+              WebkitOverflowScrolling: 'touch',
+              padding: 'clamp(1rem, 3vw, 2rem)',
               textAlign: 'left',
             }}
           >
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9375rem' }}>
+            <table style={{ width: '100%', minWidth: '620px', borderCollapse: 'collapse', fontSize: '0.9375rem' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border-primary)' }}>
                   <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-primary)', width: '40%' }}>
