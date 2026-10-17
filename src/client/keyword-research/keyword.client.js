@@ -26,6 +26,8 @@ export async function fetchKeywordResearch({
 
   const data = await response.json().catch(() => ({}));
 
+  console.log('📡 [KeywordClient] Response received from /api/keyword-research:', data);
+
   if (!response.ok && !data.error) {
     throw new Error(`Failed to fetch keywords (status ${response.status})`);
   }

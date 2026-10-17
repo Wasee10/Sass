@@ -218,6 +218,19 @@ export default function KeywordResearchPage() {
       ]);
 
       if (data.success) {
+        // Log complete keyword research call output to browser console
+        console.group('%c🎯 [Stratum Keyword Research Output]', 'color: #3161F8; font-weight: bold; font-size: 14px; padding: 2px 4px;');
+        console.log('Topic Searched:', data?.topic || topic.trim());
+        console.log('Platform Engine:', data?.platform || platform);
+        console.log('Language & Geo:', `${data?.language || language.code} / ${data?.country || country.code}`);
+        console.log('Total Keywords Collected:', data?.total || data?.keywords?.length);
+        console.log('Full Output Payload:', data);
+        console.log('Keywords Array (100 Items):', data?.keywords);
+        if (Array.isArray(data?.keywords)) {
+          console.table(data.keywords.map((kw, idx) => ({ '#': idx + 1, 'Keyword Suggestion': kw, 'Word Count': kw.split(/\s+/).length })));
+        }
+        console.groupEnd();
+
         setLoadingProgress(100);
 
         setTimeout(() => {

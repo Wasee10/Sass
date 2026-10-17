@@ -56,6 +56,15 @@ export async function POST(request) {
       );
     }
 
+    console.log(`[API /api/keyword-research] Output (${result.total} keywords collected):`, {
+      topic: result.topic,
+      platform: result.platform,
+      language: result.language,
+      country: result.country,
+      total: result.total,
+      sampleFirst5: result.keywords.slice(0, 5),
+    });
+
     return NextResponse.json({
       success: true,
       topic: result.topic,
