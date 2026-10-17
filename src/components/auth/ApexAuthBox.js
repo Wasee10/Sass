@@ -104,11 +104,30 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
   const [copiedSnippet, setCopiedSnippet] = useState(false);
   const [pgStatusNotice, setPgStatusNotice] = useState(null);
 
-  const { signIn, signUp, signInWithGoogle, loginAsDemo, updateSubscriptionPlan } = useAuth();
+  const { user, loading: authLoading, signIn, signUp, signInWithGoogle, loginAsDemo, updateSubscriptionPlan } = useAuth();
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams?.get('redirect') || '/dashboard';
+  const rawRedirect = searchParams?.get('redirect');
+  const redirectPath = rawRedirect ? decodeURIComponent(rawRedirect) : '/dashboard';
+  const cleanRedirectPath = (!redirectPath || redirectPath.startsWith('/login') || redirectPath === '/') ? '/dashboard' : redirectPath;
+
+  // Auto-redirect if already authenticated
+  useEffect(() => {
+    if (!authLoading && user) {
+      if (typeof document !== 'undefined') {
+        document.cookie = `saas_demo_user=${encodeURIComponent(user.email || 'user')}; path=/; max-age=604800; SameSite=Lax`;
+        document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
+      }
+      router.replace(cleanRedirectPath);
+      const fallbackTimer = setTimeout(() => {
+        if (typeof window !== 'undefined' && window.location.pathname.startsWith('/login')) {
+          window.location.href = cleanRedirectPath;
+        }
+      }, 350);
+      return () => clearTimeout(fallbackTimer);
+    }
+  }, [user, authLoading, cleanRedirectPath, router]);
 
   // Package & Interval Selection State
   const planParam = searchParams?.get('plan');
@@ -230,12 +249,18 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
     e.preventDefault();
     setError(null);
 
-    // Enforcement: User must choose a package before login/signup
-    if (!selectedPackage) {
-      setError('Please choose a package (Free, Professional, or Enterprise) to continue.');
-      setShowPackagePicker(true);
-      toast.warning('Package Required', 'Please select a package before authenticating.');
-      return;
+    // Enforcement: For signup, user must pick a package. For signin, default to Professional if none chosen.
+    let pkgToUse = selectedPackage;
+    if (!pkgToUse) {
+      if (mode === 'signin') {
+        pkgToUse = AVAILABLE_PACKAGES[1]; // Professional default for sign-in
+        setSelectedPackage(pkgToUse);
+      } else {
+        setError('Please choose a package (Free, Professional, or Enterprise) to continue.');
+        setShowPackagePicker(true);
+        toast.warning('Package Required', 'Please select a package before authenticating.');
+        return;
+      }
     }
 
     if (!email || !password) {
@@ -243,13 +268,13 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
       return;
     }
 
-    const isYearly = selectedInterval === 'year' || selectedPackage.billingInterval === 'year';
-    const resolvedPlanId = selectedPackage.id === 'free'
+    const isYearly = selectedInterval === 'year' || pkgToUse.billingInterval === 'year';
+    const resolvedPlanId = pkgToUse.id === 'free'
       ? 'free'
       : isYearly
-      ? (selectedPackage.yearlyId || (selectedPackage.id?.includes('enterprise') ? 'enterprise-yearly' : 'pro-yearly'))
-      : (selectedPackage.id?.includes('enterprise') ? 'enterprise' : 'pro-monthly');
-    const resolvedInterval = selectedPackage.id === 'free' ? 'forever' : isYearly ? 'year' : 'month';
+      ? (pkgToUse.yearlyId || (pkgToUse.id?.includes('enterprise') ? 'enterprise-yearly' : 'pro-yearly'))
+      : (pkgToUse.id?.includes('enterprise') ? 'enterprise' : 'pro-monthly');
+    const resolvedInterval = pkgToUse.id === 'free' ? 'forever' : isYearly ? 'year' : 'month';
 
     setLoading(true);
     try {
@@ -260,9 +285,10 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
           setError(friendly);
           toast.error('Sign In Failed', friendly);
         } else {
-          // Ensure cookie is synchronously set
+          // Ensure cookies are synchronously set
           if (typeof document !== 'undefined') {
             document.cookie = `saas_demo_user=${encodeURIComponent(data?.user?.email || email)}; path=/; max-age=604800; SameSite=Lax`;
+            document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
           }
 
           // Persistent flash toast for dashboard
@@ -272,7 +298,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
               JSON.stringify({
                 type: 'success',
                 title: 'Login Successful!',
-                message: `Welcome back to Stratum! Your ${selectedPackage.name} dashboard is ready.`
+                message: `Welcome back to Stratum! Your ${pkgToUse.name} dashboard is ready.`
               })
             );
           }
@@ -287,7 +313,12 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
           }
 
           // Directly go to dashboard
-          window.location.href = redirectPath;
+          router.replace(cleanRedirectPath);
+          setTimeout(() => {
+            if (typeof window !== 'undefined') {
+              window.location.href = cleanRedirectPath;
+            }
+          }, 150);
         }
       } else {
         const { data, error: authError } = await signUp({ email, password, fullName });
@@ -298,6 +329,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
         } else {
           if (typeof document !== 'undefined') {
             document.cookie = `saas_demo_user=${encodeURIComponent(data?.user?.email || email)}; path=/; max-age=604800; SameSite=Lax`;
+            document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
           }
 
           if (typeof window !== 'undefined') {
@@ -306,7 +338,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
               JSON.stringify({
                 type: 'success',
                 title: 'Account Created Successfully!',
-                message: `Welcome to Stratum, ${fullName || 'Developer'}! Your ${selectedPackage.name} environment is ready.`
+                message: `Welcome to Stratum, ${fullName || 'Developer'}! Your ${pkgToUse.name} environment is ready.`
               })
             );
           }
@@ -318,11 +350,17 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
             updateSubscriptionPlan(resolvedPlanId, resolvedInterval).catch(() => {});
           }
 
-          const finalRedirect = (!isFree && (!redirectPath || redirectPath === '/dashboard'))
+          const isFree = pkgToUse.id === 'free';
+          const finalRedirect = (!isFree && (!cleanRedirectPath || cleanRedirectPath === '/dashboard'))
             ? `/checkout?plan=${resolvedPlanId}&interval=${resolvedInterval}`
-            : (redirectPath || '/dashboard');
+            : (cleanRedirectPath || '/dashboard');
 
-          window.location.href = finalRedirect;
+          router.replace(finalRedirect);
+          setTimeout(() => {
+            if (typeof window !== 'undefined') {
+              window.location.href = finalRedirect;
+            }
+          }, 150);
         }
       }
     } catch {
@@ -334,20 +372,19 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
   };
 
   const handleGoogleAuth = async () => {
-    if (!selectedPackage) {
-      setError('Please choose a package before signing in with Google.');
-      setShowPackagePicker(true);
-      toast.warning('Package Required', 'Please select a package before signing in with Google.');
-      return;
+    let pkgToUse = selectedPackage;
+    if (!pkgToUse) {
+      pkgToUse = AVAILABLE_PACKAGES[1]; // Default to Professional
+      setSelectedPackage(pkgToUse);
     }
 
-    const isYearly = selectedInterval === 'year' || selectedPackage.billingInterval === 'year';
-    const resolvedPlanId = selectedPackage.id === 'free'
+    const isYearly = selectedInterval === 'year' || pkgToUse.billingInterval === 'year';
+    const resolvedPlanId = pkgToUse.id === 'free'
       ? 'free'
       : isYearly
-      ? (selectedPackage.yearlyId || (selectedPackage.id?.includes('enterprise') ? 'enterprise-yearly' : 'pro-yearly'))
-      : (selectedPackage.id?.includes('enterprise') ? 'enterprise' : 'pro-monthly');
-    const resolvedInterval = selectedPackage.id === 'free' ? 'forever' : isYearly ? 'year' : 'month';
+      ? (pkgToUse.yearlyId || (pkgToUse.id?.includes('enterprise') ? 'enterprise-yearly' : 'pro-yearly'))
+      : (pkgToUse.id?.includes('enterprise') ? 'enterprise' : 'pro-monthly');
+    const resolvedInterval = pkgToUse.id === 'free' ? 'forever' : isYearly ? 'year' : 'month';
 
     setError(null);
     setGoogleLoading(true);
@@ -360,6 +397,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
       } else {
         if (typeof document !== 'undefined') {
           document.cookie = `saas_demo_user=${encodeURIComponent(data?.user?.email || 'google_user')}; path=/; max-age=604800; SameSite=Lax`;
+          document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
         }
 
         if (typeof window !== 'undefined') {
@@ -380,7 +418,12 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
           updateSubscriptionPlan(resolvedPlanId, resolvedInterval).catch(() => {});
         }
 
-        window.location.href = redirectPath;
+        router.replace(cleanRedirectPath);
+        setTimeout(() => {
+          if (typeof window !== 'undefined') {
+            window.location.href = cleanRedirectPath;
+          }
+        }, 150);
       }
     } catch {
       setError('Google sign-in encountered an error.');
@@ -422,6 +465,7 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
 
     if (typeof document !== 'undefined') {
       document.cookie = 'saas_demo_user=alex%40stratum.io; path=/; max-age=604800; SameSite=Lax';
+      document.cookie = 'stratum_user_session=active; path=/; max-age=604800; SameSite=Lax';
     }
 
     if (typeof window !== 'undefined') {
@@ -443,9 +487,64 @@ export default function ApexAuthBox({ initialMode = 'signin' }) {
       displayName: 'Alex Thorne',
     }).catch(() => {});
 
-    // DIRECTLY GO TO redirectPath OR /dashboard
-    window.location.href = redirectPath || '/dashboard';
+    // DIRECTLY GO TO cleanRedirectPath
+    router.replace(cleanRedirectPath);
+    setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        window.location.href = cleanRedirectPath;
+      }
+    }, 150);
   };
+
+  // If already authenticated and page is loaded, show redirecting state
+  if (!authLoading && user) {
+    return (
+      <div
+        className="fade-in-up"
+        style={{
+          width: '100%',
+          maxWidth: '480px',
+          background: 'var(--bg-card)',
+          borderRadius: 'var(--radius-xl)',
+          border: '1px solid var(--border-primary)',
+          boxShadow: 'var(--shadow-xl)',
+          padding: '2.5rem 2rem',
+          textAlign: 'center',
+          margin: '2rem auto',
+        }}
+      >
+        <div
+          style={{
+            width: '56px',
+            height: '56px',
+            borderRadius: '16px',
+            background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-secondary))',
+            color: '#ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 1.25rem',
+            boxShadow: '0 8px 20px rgba(79, 70, 229, 0.3)',
+          }}
+        >
+          <Loader2 size={28} className="spin-animation" />
+        </div>
+        <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0 0 0.5rem 0', color: 'var(--text-primary)' }}>
+          Already Signed In
+        </h3>
+        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: '0 0 1.5rem 0', lineHeight: 1.5 }}>
+          You are currently signed in as <strong>{user.email}</strong>. Redirecting you to your workspace...
+        </p>
+        <a
+          href={cleanRedirectPath}
+          className="btn btn-primary"
+          style={{ width: '100%', padding: '0.75rem', fontWeight: 700 }}
+        >
+          Go to Dashboard Now &rarr;
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div

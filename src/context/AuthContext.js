@@ -61,6 +61,7 @@ export function AuthProvider({ children }) {
         try {
           if (typeof document !== 'undefined') {
             document.cookie = `saas_demo_user=${encodeURIComponent(firebaseUser.email || 'apex_user')}; path=/; max-age=604800; SameSite=Lax`;
+            document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
           }
         } catch {
           // ignore cookie error
@@ -324,6 +325,7 @@ export function AuthProvider({ children }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (typeof document !== 'undefined') {
         document.cookie = `saas_demo_user=${encodeURIComponent(userCredential.user.email || 'user')}; path=/; max-age=604800; SameSite=Lax`;
+        document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
       }
       return { data: { user: userCredential.user }, error: null };
     } catch (err) {
@@ -337,6 +339,7 @@ export function AuthProvider({ children }) {
       const result = await signInWithPopup(auth, googleProvider);
       if (typeof document !== 'undefined') {
         document.cookie = `saas_demo_user=${encodeURIComponent(result.user.email || 'user')}; path=/; max-age=604800; SameSite=Lax`;
+        document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
       }
       return { data: { user: result.user }, error: null };
     } catch (err) {
@@ -358,6 +361,7 @@ export function AuthProvider({ children }) {
 
       if (typeof document !== 'undefined') {
         document.cookie = `saas_demo_user=${encodeURIComponent(firebaseUser.email || 'user')}; path=/; max-age=604800; SameSite=Lax`;
+        document.cookie = `stratum_user_session=active; path=/; max-age=604800; SameSite=Lax`;
       }
 
       if (fullName) {
@@ -404,6 +408,7 @@ export function AuthProvider({ children }) {
     try {
       if (typeof document !== 'undefined') {
         document.cookie = 'saas_demo_user=; path=/; max-age=0; SameSite=Lax';
+        document.cookie = 'stratum_user_session=; path=/; max-age=0; SameSite=Lax';
       }
       await firebaseSignOut(auth);
       router.push('/login');

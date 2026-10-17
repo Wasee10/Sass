@@ -26,6 +26,8 @@ import {
   SlidersHorizontal,
   Flame,
   FileSpreadsheet,
+  Zap,
+  CheckCircle2,
 } from 'lucide-react';
 
 // Supported Search Platforms
@@ -116,11 +118,44 @@ export default function KeywordResearchPage() {
 
   // Results State
   const [loading, setLoading] = useState(false);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingStage, setLoadingStage] = useState(0);
   const [error, setError] = useState(null);
   const [resultsData, setResultsData] = useState(null);
+  const resultsRef = useRef(null);
   const [selectedKeywords, setSelectedKeywords] = useState(new Set());
   const [tableFilter, setTableFilter] = useState('');
   const [copiedKeyword, setCopiedKeyword] = useState(null);
+
+  // Smoothly increment loader progress and stage during keyword collection
+  useEffect(() => {
+    if (!loading) {
+      setLoadingProgress(0);
+      setLoadingStage(0);
+      return;
+    }
+
+    setLoadingProgress(14);
+    setLoadingStage(0);
+
+    const timer = setInterval(() => {
+      setLoadingProgress((prev) => {
+        if (prev < 38) {
+          setLoadingStage(0);
+          return prev + 6;
+        } else if (prev < 72) {
+          setLoadingStage(1);
+          return prev + 4;
+        } else if (prev < 93) {
+          setLoadingStage(2);
+          return prev + 2;
+        }
+        return prev;
+      });
+    }, 160);
+
+    return () => clearInterval(timer);
+  }, [loading]);
 
   // Close dropdowns on click outside
   useEffect(() => {
@@ -165,22 +200,36 @@ export default function KeywordResearchPage() {
       return;
     }
 
+    setResultsData(null);
     setLoading(true);
     try {
       toast.info('Researching Keywords', `Collecting genuine suggestions for "${topic.trim()}"...`);
 
-      const data = await fetchKeywordResearch({
-        topic: topic.trim(),
-        platform,
-        language: language.code,
-        country: country.code,
-        maxLimit: 100,
-      });
+      // Guarantee minimum duration so the user sees the beautiful spinner smoothly
+      const [data] = await Promise.all([
+        fetchKeywordResearch({
+          topic: topic.trim(),
+          platform,
+          language: language.code,
+          country: country.code,
+          maxLimit: 100,
+        }),
+        new Promise((resolve) => setTimeout(resolve, 850)),
+      ]);
 
       if (data.success) {
-        setResultsData(data);
-        setSelectedKeywords(new Set());
-        setTableFilter('');
+        setLoadingProgress(100);
+
+        setTimeout(() => {
+          setResultsData(data);
+          setSelectedKeywords(new Set());
+          setTableFilter('');
+          setLoading(false);
+
+          setTimeout(() => {
+            resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 80);
+        }, 220);
 
         // Synchronize with dashboard telemetry via localStorage
         if (typeof window !== 'undefined') {
@@ -230,15 +279,15 @@ export default function KeywordResearchPage() {
           `Collected ${data.total} unique suggestions from ${platform === 'youtube' ? 'YouTube' : 'Google'}.`
         );
       } else {
+        setLoading(false);
         setError(data.error || 'Failed to collect keyword suggestions.');
         toast.error('Search Notice', data.error || 'Provider returned no results.');
       }
     } catch (err) {
+      setLoading(false);
       console.error('Keyword research fetch error:', err);
       setError(err.message || 'Network error while contacting keyword research service.');
       toast.error('Network Error', 'Failed to reach keyword research service.');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -766,15 +815,16 @@ export default function KeywordResearchPage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                background: 'var(--brand-primary)',
+                background: loading ? 'var(--brand-primary-hover)' : 'var(--brand-primary)',
                 borderColor: 'var(--brand-primary)',
                 boxShadow: '0 4px 15px rgba(49, 97, 248, 0.35)',
+                transition: 'all 0.2s ease',
               }}
             >
               {loading ? (
                 <>
                   <RefreshCw size={18} className="spin-animation" />
-                  <span>Collecting 100 Keywords...</span>
+                  <span>Harvesting Keywords...</span>
                 </>
               ) : (
                 <>
@@ -787,8 +837,334 @@ export default function KeywordResearchPage() {
         </form>
       </Card>
 
+      {/* Beautiful Dedicated Loading Spinner Section */}
+      {loading && (
+        <Card
+          className="fade-in-up"
+          style={{
+            padding: '3rem 2rem',
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+            border: '1.5px solid rgba(99, 102, 241, 0.3)',
+            boxShadow: '0 20px 40px -15px rgba(79, 70, 229, 0.15)',
+            background: 'var(--bg-card)',
+          }}
+        >
+          {/* Ambient Background Radial Glow */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '380px',
+              height: '380px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 75%)',
+              pointerEvents: 'none',
+              zIndex: 0,
+            }}
+          />
+
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: '640px', margin: '0 auto' }}>
+            {/* Dynamic Concentric Orbital Spinner */}
+            <div
+              style={{
+                position: 'relative',
+                width: '100px',
+                height: '100px',
+                margin: '0 auto 1.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              {/* Radar Ping Wave */}
+              <div
+                className="radar-ping"
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  border: `2px solid ${platform === 'youtube' ? 'rgba(255, 0, 0, 0.35)' : 'rgba(6, 182, 212, 0.45)'}`,
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* Outer Conic/Gradient Rotating Ring */}
+              <div
+                className="spin-animation"
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  border: '3px solid transparent',
+                  borderTopColor: platform === 'youtube' ? '#FF0000' : '#4F46E5',
+                  borderRightColor: platform === 'youtube' ? '#FF7A00' : '#06B6D4',
+                  borderBottomColor: 'transparent',
+                  borderLeftColor: 'transparent',
+                }}
+              />
+
+              {/* Middle Dashed Reverse Ring */}
+              <div
+                className="spin-reverse-slow"
+                style={{
+                  position: 'absolute',
+                  width: '76%',
+                  height: '76%',
+                  borderRadius: '50%',
+                  border: '2px dashed rgba(99, 102, 241, 0.5)',
+                }}
+              />
+
+              {/* Central Glowing Core */}
+              <div
+                className="pulse-orb"
+                style={{
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '16px',
+                  background: platform === 'youtube' 
+                    ? 'linear-gradient(135deg, #FF0000, #FF5E3A)' 
+                    : 'linear-gradient(135deg, #4F46E5, #06B6D4)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#ffffff',
+                  boxShadow: platform === 'youtube'
+                    ? '0 6px 20px rgba(255, 0, 0, 0.4)'
+                    : '0 6px 20px rgba(79, 70, 229, 0.45)',
+                }}
+              >
+                <Sparkles size={24} />
+              </div>
+            </div>
+
+            {/* Main Status Headline */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+              <span
+                style={{
+                  display: 'inline-block',
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  boxShadow: '0 0 10px #10b981',
+                }}
+              />
+              <h3
+                style={{
+                  fontSize: '1.35rem',
+                  fontWeight: 800,
+                  margin: 0,
+                  color: 'var(--text-primary)',
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                Generating Genuine Keywords...
+              </h3>
+            </div>
+
+            {/* Query Target Details */}
+            <p
+              style={{
+                fontSize: '0.9375rem',
+                color: 'var(--text-secondary)',
+                margin: '0 auto 1.5rem',
+                lineHeight: 1.5,
+              }}
+            >
+              Collecting high-intent search suggestions for{' '}
+              <strong style={{ color: 'var(--brand-primary)', fontWeight: 700 }}>
+                &ldquo;{topic.trim()}&rdquo;
+              </strong>{' '}
+              directly from{' '}
+              <span style={{ fontWeight: 600, color: platform === 'youtube' ? '#ff0000' : '#3161F8' }}>
+                {platform === 'youtube' ? 'YouTube Autocomplete' : 'Google Autocomplete'}
+              </span>
+              .
+            </p>
+
+            {/* Dynamic Animated Progress Bar */}
+            <div style={{ marginBottom: '1.75rem' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '0.75rem',
+                  color: 'var(--text-muted)',
+                  fontWeight: 600,
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <RefreshCw size={13} className="spin-animation" style={{ color: 'var(--brand-primary)' }} />
+                  {loadingStage === 0 && 'Stage 1/3: Establishing telemetry session...'}
+                  {loadingStage === 1 && 'Stage 2/3: Probing A–Z alphabet extensions & modifiers...'}
+                  {loadingStage === 2 && 'Stage 3/3: Deduplicating and indexing top 100 suggestions...'}
+                </span>
+                <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{Math.min(loadingProgress, 100)}%</span>
+              </div>
+
+              {/* Progress Track */}
+              <div
+                style={{
+                  width: '100%',
+                  height: '7px',
+                  borderRadius: '9999px',
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-primary)',
+                  overflow: 'hidden',
+                }}
+              >
+                <div
+                  className="shimmer-progress"
+                  style={{
+                    width: `${Math.min(loadingProgress, 100)}%`,
+                    height: '100%',
+                    borderRadius: '9999px',
+                    transition: 'width 0.25s ease-out',
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Live Stage Indicators */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gap: '0.75rem',
+                textAlign: 'left',
+                padding: '1rem',
+                background: 'var(--bg-secondary)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-primary)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <div
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: loadingStage >= 0 ? 'var(--brand-primary-light)' : 'transparent',
+                    color: loadingStage >= 0 ? 'var(--brand-primary)' : 'var(--text-muted)',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {loadingStage > 0 ? '✓' : <RefreshCw size={12} className="spin-animation" />}
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)' }}>Autocomplete Connect</div>
+                  <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>Verified API Gateway</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <div
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: loadingStage >= 1 ? 'var(--brand-primary-light)' : 'transparent',
+                    color: loadingStage >= 1 ? 'var(--brand-primary)' : 'var(--text-muted)',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {loadingStage > 1 ? '✓' : loadingStage === 1 ? <RefreshCw size={12} className="spin-animation" /> : '2'}
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)' }}>Alphabet Expansions</div>
+                  <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>a–z Variations & Intent</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <div
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: loadingStage >= 2 ? 'var(--brand-primary-light)' : 'transparent',
+                    color: loadingStage >= 2 ? 'var(--brand-primary)' : 'var(--text-muted)',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {loadingStage === 2 ? <RefreshCw size={12} className="spin-animation" /> : '3'}
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-primary)' }}>100 Unique Cap</div>
+                  <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>In-Memory Deduplication</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Target Config Chips */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '1.25rem', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  padding: '0.2rem 0.65rem',
+                  borderRadius: '9999px',
+                  background: platform === 'youtube' ? 'rgba(255, 0, 0, 0.1)' : 'rgba(49, 97, 248, 0.1)',
+                  color: platform === 'youtube' ? '#ff0000' : '#3161F8',
+                  fontWeight: 600,
+                }}
+              >
+                {platform === 'youtube' ? 'YouTube Autocomplete' : 'Google Autocomplete'}
+              </span>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  padding: '0.2rem 0.65rem',
+                  borderRadius: '9999px',
+                  background: 'var(--bg-secondary)',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-primary)',
+                  fontWeight: 500,
+                }}
+              >
+                🌐 {language.name} ({language.code})
+              </span>
+              <span
+                style={{
+                  fontSize: '0.75rem',
+                  padding: '0.2rem 0.65rem',
+                  borderRadius: '9999px',
+                  background: 'var(--bg-secondary)',
+                  color: 'var(--text-secondary)',
+                  border: '1px solid var(--border-primary)',
+                  fontWeight: 500,
+                }}
+              >
+                {country.flag} {country.name}
+              </span>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Results Section */}
-      {resultsData && (
+      {resultsData && !loading && (
+        <div ref={resultsRef} className="fade-in-up">
         <Card style={{ padding: '2rem' }}>
           {/* Metadata Summary Banner Above Table */}
           <div
@@ -1175,10 +1551,11 @@ export default function KeywordResearchPage() {
             </div>
           </div>
         </Card>
+        </div>
       )}
 
       {/* Educational Guidance Footer Card */}
-      {!resultsData && (
+      {!resultsData && !loading && (
         <Card style={{ padding: '2rem' }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 800, margin: '0 0 0.85rem 0', color: 'var(--text-primary)' }}>
             How Does Controlled Keyword Research Work?

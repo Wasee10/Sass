@@ -443,8 +443,82 @@ h1, h2, h3, h4, h5, h6 {
   to { transform: rotate(360deg); }
 }
 
+@keyframes spinReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes pulseOrb {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+    box-shadow: 0 0 35px rgba(99, 102, 241, 0.55);
+  }
+}
+
+@keyframes radarPing {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes shimmerProgress {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .spin {
   animation: spin 1s linear infinite;
+}
+
+.spin-animation {
+  animation: spin 1s linear infinite;
+}
+
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+.spin-reverse-slow {
+  animation: spinReverse 4s linear infinite;
+}
+
+.pulse-orb {
+  animation: pulseOrb 2.2s ease-in-out infinite;
+}
+
+.shimmer-progress {
+  background: linear-gradient(90deg, #4F46E5 0%, #06B6D4 50%, #4F46E5 100%);
+  background-size: 200% 100%;
+  animation: shimmerProgress 1.6s ease-in-out infinite;
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
